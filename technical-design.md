@@ -1,6 +1,6 @@
 # 加拿大移民中文信息网站：技术设计
 
-> 状态：工作稿 v0.2  
+> 状态：工作稿 v0.3
 > 更新日期：2026-09-04
 
 ## 1. 技术目标
@@ -13,31 +13,33 @@
 
 ## 2. 推荐技术栈
 
-- Next.js + TypeScript；
-- Tailwind CSS；
+- Next.js App Router + TypeScript；
+- Tailwind CSS 4；
 - shadcn/ui 作为基础组件，不直接决定视觉风格；
 - 普通 Markdown + YAML front matter；
 - Zod 校验内容与数据；
+- pnpm 管理依赖；
+- Vitest + Playwright 测试；
 - 构建时静态搜索索引；
 - Vercel 或同类静态/混合部署；
 - GitHub Actions 运行检查。
 
 首版优先普通 Markdown，而不是允许任意 React 表达式的 MDX。确有交互图表需求时，对少量可信页面开放 MDX。具体依赖版本和库选择在实现前锁定，并写入 package.json 与 ADR。
 
+M1 使用 App Router 静态生成；CSS variables 是颜色和圆角的单一来源，Tailwind 负责布局与响应式组合。中文字体采用系统优先字体栈，不加载远程字体。
+
+公开页面、RSS、sitemap 和搜索索引统一消费经过状态过滤的公开内容集合；原始 Content 不直接暴露给输出层。
+
 ## 3. 建议代码结构
 
 ```text
 app/
-├── (site)/
-│   ├── page.tsx
-│   ├── news/
-│   ├── policies/
-│   ├── programs/
-│   ├── provinces/
-│   ├── data/
-│   └── search/
+├── page.tsx
+├── news/
 ├── rss.xml/
-└── sitemap.ts
+├── robots.ts
+├── sitemap.ts
+└── globals.css
 
 components/
 ├── content/
@@ -74,6 +76,7 @@ Markdown/JSON
 - 禁止不受信任的内联脚本和任意组件；
 - 外部链接增加合理的安全属性；
 - 官方来源 URL 仅允许 HTTPS，并通过维护中的官方域名白名单检查；
+- 官方来源和补充来源使用不同的 Schema，补充来源不要求官方域名；
 - 自动生成文件只进入草稿目录或独立分支；
 - 生产构建排除 `publicationStatus: draft` 和 `review.status != approved`。
 
@@ -99,7 +102,7 @@ Markdown/JSON
 - `NewsArticle`、`Article` 和 `BreadcrumbList` JSON-LD；
 - `datePublished`、`dateModified` 和作者信息；
 - 当前指南与历史新闻使用不同的结构化数据类型和视觉标识；
-- Open Graph 和分享图；
+- 基础 Open Graph metadata；分享图延期至后续视觉资源准备完成后；
 - 标签页达到最低内容量后才允许索引；
 - 搜索、组合筛选、草稿和薄内容页设置 `noindex`。
 

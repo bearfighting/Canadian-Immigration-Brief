@@ -28,14 +28,14 @@ data/
 
 ## 3. 内容类型
 
-| 类型 | `contentType` | 用途 |
-| --- | --- | --- |
-| 新闻 | `news` | 报道新发生的实质变化 |
-| 政策解释 | `policy-explainer` | 解释法律、制度和政策背景 |
-| 项目指南 | `program-guide` | 维护项目当前有效规则 |
-| 数据分析 | `data-analysis` | 解释统计数据和现实趋势 |
-| 周度简报 | `weekly-brief` | 汇总一周的重要变化 |
-| 法律案例 | `legal-case` | 介绍具有公共价值的裁判与影响 |
+| 类型     | `contentType`      | 用途                         |
+| -------- | ------------------ | ---------------------------- |
+| 新闻     | `news`             | 报道新发生的实质变化         |
+| 政策解释 | `policy-explainer` | 解释法律、制度和政策背景     |
+| 项目指南 | `program-guide`    | 维护项目当前有效规则         |
+| 数据分析 | `data-analysis`    | 解释统计数据和现实趋势       |
+| 周度简报 | `weekly-brief`     | 汇总一周的重要变化           |
+| 法律案例 | `legal-case`       | 介绍具有公共价值的裁判与影响 |
 
 ## 4. 通用 Front Matter
 
@@ -82,11 +82,12 @@ policyStatus: announced
 importance: high
 jurisdictions: [federal]
 topics: [study-permit]
-programs: [study-permit]
+programs: [express-entry]
 audiences: [prospective-student]
 
 officialSources:
-  - title: Immigration, Refugees and Citizenship Canada
+  - id: ircc-example
+    title: Immigration, Refugees and Citizenship Canada
     url: https://www.canada.ca/example
     language: en
     publishedAt: 2026-09-03
@@ -114,12 +115,17 @@ slug: post-graduation-work-permit
 contentType: program-guide
 language: zh-CN
 publicationStatus: published
+publishedAt: 2026-09-04
+updatedAt: 2026-09-04
 programStatus: open
 jurisdictions: [federal]
 topics: [work-permit]
 audiences: [international-student, recent-graduate]
 lastVerifiedAt: 2026-09-04
 guideVersion: 2026-09
+author: editorial-team
+editor: editor-id
+changeSummary: 首次建立指南，无前一版本。
 officialSources:
   - id: ircc-pgwp-official
     title: IRCC — Post-Graduation Work Permit
@@ -167,13 +173,13 @@ review:
 
 ## 8. 内容关系
 
-- `topics` 表示主题，`programs` 必须引用具体项目指南 ID，不得把主题 slug 当作项目 ID；
+- `topics` 表示主题，`programs` 是已注册的项目指南 ID，必须引用具体 `program-guide` 内容，不得把主题 slug 当作项目 ID；
 - 新闻通过 `jurisdictions` 进入联邦或省级列表；
 - `audiences` 生成“按身份查找”页面；
 - 项目页自动聚合相关新闻和时间线；
 - 周报引用新闻 ID，不复制事实数据；
 - 数据分析引用结构化数据集及其版本日期。
-- 项目指南通过 `supersedes`、`supersededBy` 和 `changeSummary` 记录版本关系；
+- 项目指南通过 `supersedes`、`supersededBy` 和 `changeSummary` 记录同类型版本关系；新闻和其他内容类型也只能在自身类型内建立版本关系；
 - slug 变化通过 `data/redirects.json` 保留旧地址。
 
 ## 9. 新闻生命周期

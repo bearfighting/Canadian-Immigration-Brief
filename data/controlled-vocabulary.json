@@ -1,0 +1,25 @@
+{
+  "jurisdictions": ["federal", "bc", "ontario", "quebec"],
+  "topics": [
+    "visitor",
+    "study-permit",
+    "work-permit",
+    "permanent-residence",
+    "family-sponsorship",
+    "citizenship",
+    "refugee-humanitarian",
+    "settlement",
+    "enforcement"
+  ],
+  "audiences": [
+    "prospective-student",
+    "international-student",
+    "temporary-worker",
+    "recent-graduate",
+    "pr-candidate",
+    "family-sponsorship-applicant",
+    "permanent-resident",
+    "professional-observer"
+  ],
+  "programs": ["express-entry"]
+}

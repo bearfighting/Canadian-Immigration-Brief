@@ -48,21 +48,32 @@ M0 完成记录：
 
 Checklist：
 
-- [ ] 初始化 Next.js、TypeScript 和基础样式；
-- [ ] 建立 content、data、lib 和 components 目录；
-- [ ] 实现 Markdown 与 YAML front matter 解析；
-- [ ] 实现内容 Schema 和受控词表校验；
-- [ ] 实现 publicationStatus 与 review.status 发布门槛；
-- [ ] 实现内部 ID、slug 和项目引用校验；
-- [ ] 建立官方来源域名白名单；
-- [ ] 建立 redirects 数据结构；
-- [ ] 配置 lint、格式化、类型检查和基础 CI；
-- [ ] 建立 staging 预览环境；
-- [ ] 准备一份有效样例、一份草稿样例和一份故意非法样例。
+- [x] 初始化 Next.js、TypeScript 和基础样式；
+- [x] 建立 content、data、lib 和 components 目录；
+- [x] 实现 Markdown 与 YAML front matter 解析；
+- [x] 实现内容 Schema 和受控词表校验；
+- [x] 实现 publicationStatus 与 review.status 发布门槛；
+- [x] 实现内部 ID、slug 和项目引用校验；
+- [x] 建立官方来源域名白名单；
+- [x] 区分官方来源与补充来源，并建立公开内容投影；
+- [x] 建立 redirects 数据结构；
+- [x] 配置 lint、格式化、类型检查和基础 CI；
+- [ ] 建立 staging 预览环境（待部署平台配置）；
+- [x] 准备一份有效样例、一份草稿样例和一份故意非法样例；
+- [x] 确认系统优先字体栈和正文/标题排版；
+- [x] 确认颜色、状态色、间距、圆角和阴影 tokens；
+- [x] 将 CSS tokens 接入 Tailwind 和 shadcn；
+- [x] 引入并验证首批 shadcn/ui 基础组件；
+- [x] 完成一篇样例新闻从 Markdown 到静态页面的垂直切片；
+- [x] 完成 RSS XML 转义、sitemap、robots、canonical 和基础 JSON-LD；
+- [x] 完成来源 ID、内容关系和版本关系的一致性校验；
+- [x] 完成 Vitest 和 Playwright 基础测试。
 
 完成定义：
 
-非法内容会使构建失败，草稿和未批准内容不会出现在生产页面、RSS 或 sitemap；有效样例可以完成本地构建。
+非法内容会使构建失败，草稿和未批准内容不会出现在生产页面、RSS、sitemap 或搜索索引；有效样例可以完成本地构建，且 CSS tokens 和基础组件已经实际使用。staging 预览环境仍需在部署平台配置后补验。
+
+M1 当前状态：实现完成，staging 待外部环境配置。
 
 ## Milestone 2：首发内容准备
 
@@ -106,7 +117,7 @@ Checklist：
 - [ ] 实现当前指南、历史新闻和被替代内容提示；
 - [ ] 实现官方来源卡片；
 - [ ] 实现基础搜索和标签过滤；
-- [ ] 实现 RSS、sitemap、robots 和 canonical；
+- [x] 实现 RSS、sitemap、robots 和 canonical（M1 已建立基础能力）；
 - [ ] 实现 404、失效内容和重定向页面。
 
 完成定义：
@@ -210,12 +221,13 @@ Checklist：
 
 ## 里程碑记录模板
 
-milestone: M1  
-status: completed  
-completedAt: 2026-09-04  
-owner: ...  
-evidence:  
-  - ...  
-openIssues:  
-  - ...  
-nextMilestone: M2
+milestone: M1
+status: completed
+completedAt: 2026-09-04
+owner: ...
+evidence:
+
+- ...
+  openIssues:
+- ...
+  nextMilestone: M2

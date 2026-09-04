@@ -5,6 +5,8 @@
 
 本文件是内容模型的实现级补充。Schema 是构建的唯一入口；任何未通过校验的内容不得进入生产构建。
 
+生产内容必须通过 `getAllContent()` 进入构建流程，由统一的构建参考时间执行 Schema 校验，并进一步完成跨文件项目、相关内容和版本关系校验。业务代码不得自行绕过该流程读取 Markdown。
+
 ## 1. 必填字段
 
 所有内容必须有：
@@ -14,7 +16,7 @@
 - publicationStatus、updatedAt、lastVerifiedAt；
 - author、editor 和 review.status；
 - jurisdictions、topics、audiences；
-- 至少一个可核验来源（草稿可以暂缺，但发布前必须补齐）。
+- 至少一个可核验的官方来源（草稿可以暂缺，但发布前必须补齐）；补充来源单独记录类型，不能与官方来源混淆。
 
 ## 2. 发布规则
 
