@@ -196,3 +196,5 @@ Markdown/JSON
 - 图片存储策略；
 - 是否建立独立 staging 域名；
 - 自动化初稿采用文件、Issue 还是 Pull Request。
+
+技术实施应按 milestones.md 推进；Milestone 1 的基础校验和 staging 完成前，不进入批量内容生产。
