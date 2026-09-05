@@ -54,6 +54,100 @@ test("draft news is not publicly generated", async ({ page }) => {
   expect(response?.status()).toBe(404);
 });
 
+test("non-news and legal pages expose their own canonical URLs", async ({ page }) => {
+  await page.goto("/content/express-entry/");
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    "href",
+    /\/content\/express-entry\/$/,
+  );
+  await page.goto("/privacy/");
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", /\/privacy\/$/);
+  await page.goto("/sitemap.xml");
+  await expect(page.locator("body")).toContainText("/privacy/");
+  await expect(page.locator("body")).toContainText("/disclaimer/");
+  await expect(page.locator("body")).toContainText("/corrections/");
+});
+
+test("article pages expose accessible sharing controls", async ({ page }) => {
+  await page.goto("/news/express-entry-physicians-draw-september-2026/");
+  await expect(page.getByRole("heading", { name: "分享本文" })).toBeVisible();
+  for (const name of ["系统分享", "复制链接"]) {
+    await expect(page.getByRole("button", { name })).toBeVisible();
+  }
+  for (const name of [
+    "分享到 Facebook",
+    "分享到 X",
+    "分享到 WhatsApp",
+    "分享到 Telegram",
+    "分享到 LinkedIn",
+    "分享到微博",
+  ]) {
+    await expect(page.getByRole("link", { name })).toBeVisible();
+  }
+  await expect(page.getByRole("link", { name: "分享到 X" })).toHaveAttribute(
+    "href",
+    /https:\/\/x\.com\/intent\/tweet\?/,
+  );
+  await expect(page.getByRole("link", { name: "分享到微博" })).toHaveAttribute(
+    "href",
+    /https:\/\/service\.weibo\.com\/share\/share\.php\?/,
+  );
+  const bodyTop = await page
+    .locator("article > div.prose")
+    .evaluate((element) => element.getBoundingClientRect().top);
+  const factsTop = await page
+    .locator('section[aria-labelledby="key-facts"]')
+    .evaluate((element) => element.getBoundingClientRect().top);
+  const shareTop = await page
+    .locator('section[aria-labelledby="share-heading"]')
+    .evaluate((element) => element.getBoundingClientRect().top);
+  expect(bodyTop).toBeLessThan(factsTop);
+  expect(factsTop).toBeLessThan(shareTop);
+  await page.goto("/content/express-entry/");
+  await expect(page.getByRole("heading", { name: "分享本文" })).toBeVisible();
+  const contentBodyTop = await page
+    .locator("article > div.prose")
+    .evaluate((element) => element.getBoundingClientRect().top);
+  const contentFactsTop = await page
+    .locator('section[aria-labelledby="key-facts"]')
+    .evaluate((element) => element.getBoundingClientRect().top);
+  const contentShareTop = await page
+    .locator('section[aria-labelledby="share-heading"]')
+    .evaluate((element) => element.getBoundingClientRect().top);
+  expect(contentBodyTop).toBeLessThan(contentFactsTop);
+  expect(contentFactsTop).toBeLessThan(contentShareTop);
+});
+
+test("sharing controls provide browser fallbacks and feedback", async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "share", {
+      configurable: true,
+      value: undefined,
+    });
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: { writeText: async () => undefined },
+    });
+  });
+  await page.goto("/news/express-entry-physicians-draw-september-2026/");
+  await page.getByRole("button", { name: "系统分享" }).click();
+  await expect(page.locator('[aria-live="polite"]')).toContainText("当前浏览器不支持系统分享");
+  await page.getByRole("button", { name: "复制链接" }).click();
+  await expect(page.locator('[aria-live="polite"]')).toHaveText("链接已复制。");
+});
+
+test("cancelling native sharing is silent", async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "share", {
+      configurable: true,
+      value: () => Promise.reject(new DOMException("cancelled", "AbortError")),
+    });
+  });
+  await page.goto("/news/express-entry-physicians-draw-september-2026/");
+  await page.getByRole("button", { name: "系统分享" }).click();
+  await expect(page.locator('[aria-live="polite"]')).toHaveText("");
+});
+
 test("mobile navigation does not overflow the header", async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 800 });
   await page.goto("/");

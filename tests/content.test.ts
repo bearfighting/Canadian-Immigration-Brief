@@ -7,6 +7,7 @@ import { formatDateOnly } from "@/lib/format/date";
 import type { PublicContent } from "@/lib/content/public";
 import { filterAndPaginateContent, type ContentListItem } from "@/lib/content/browser";
 import { redirects } from "@/lib/redirects";
+import { createShareLinks } from "@/lib/share";
 
 const contentSchema = createContentSchema(new Date("2026-09-04T23:59:59.000Z"));
 
@@ -217,6 +218,26 @@ describe("content schema", () => {
         to: "/content/bc-pnp-skilled-worker/",
       },
     ]);
+  });
+
+  it("encodes article share links without changing the canonical URL", () => {
+    const links = createShareLinks(
+      "https://example.com/news/医生类别/",
+      "医生类别更新",
+      "政策摘要 & 说明",
+    );
+    expect(links.facebook).toBe(
+      "https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fexample.com%2Fnews%2F%E5%8C%BB%E7%94%9F%E7%B1%BB%E5%88%AB%2F",
+    );
+    expect(links.x).toContain("https://x.com/intent/tweet?text=");
+    expect(links.x).toContain(
+      "&url=https%3A%2F%2Fexample.com%2Fnews%2F%E5%8C%BB%E7%94%9F%E7%B1%BB%E5%88%AB%2F",
+    );
+    expect(links.whatsapp).toContain("https://wa.me/?text=");
+    expect(links.telegram).toContain("https://t.me/share/url?url=");
+    expect(links.linkedin).toContain("https://www.linkedin.com/sharing/share-offsite/?url=");
+    expect(links.weibo).toContain("https://service.weibo.com/share/share.php?url=");
+    expect(links.weibo).toContain("&title=%E5%8C%BB%E7%94%9F%E7%B1%BB%E5%88%AB%E6%9B%B4%E6%96%B0");
   });
 });
 

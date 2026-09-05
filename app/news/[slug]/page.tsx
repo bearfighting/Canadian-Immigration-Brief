@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { PolicyStatusBadge } from "@/components/content/policy-status-badge";
-import { KeyFactsPanel } from "@/components/content/key-facts-panel";
-import { OfficialSourceCard } from "@/components/content/official-source-card";
 import Link from "next/link";
-import { siteConfig } from "@/lib/site";
+import { notFound } from "next/navigation";
+import { ContentDetailLayout } from "@/components/content/content-detail-layout";
+import {
+  OfficialSourcesSection,
+  RelatedContentSection,
+} from "@/components/content/content-detail-sections";
+import { KeyFactsPanel } from "@/components/content/key-facts-panel";
+import { PolicyStatusBadge } from "@/components/content/policy-status-badge";
+import { ShareBar } from "@/components/content/share-bar";
+import { contentPath } from "@/lib/content/routes";
 import { formatDateOnly } from "@/lib/format/date";
 import {
   getContentById,
@@ -12,6 +17,7 @@ import {
   getPublishedContent,
   getRelatedContent,
 } from "@/lib/content/loader";
+import { siteConfig } from "@/lib/site";
 
 export const dynamicParams = false;
 
@@ -31,7 +37,14 @@ export async function generateMetadata({
         title: content.title,
         description: content.description,
         alternates: { canonical: `/news/${content.slug}/` },
-        openGraph: { type: "article", publishedTime: content.publishedAt?.toISOString() },
+        openGraph: {
+          type: "article",
+          title: content.title,
+          description: content.description,
+          url: contentPath(content),
+          publishedTime: content.publishedAt?.toISOString(),
+        },
+        twitter: { card: "summary", title: content.title, description: content.description },
       }
     : {};
 }
@@ -44,60 +57,50 @@ export default async function NewsPage({ params }: { params: Promise<{ slug: str
     ? await getContentById(content.supersededBy, { contentType: "news" })
     : undefined;
   const related = await getRelatedContent(content, { contentType: "news" });
+
   return (
-    <main className="mx-auto max-w-[1200px] px-4 py-10 sm:px-8">
-      <article className="mx-auto max-w-[760px]">
-        <div className="mb-6 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-          <span>新闻 · 加拿大移民信息简报</span>
-          <PolicyStatusBadge status={content.policyStatus} />
-          <span>发布于：{formatDateOnly(content.publishedAt)}</span>
-          <span>最后核验：{formatDateOnly(content.lastVerifiedAt)}</span>
-        </div>
-        <h1 className="text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
-          {content.title}
-        </h1>
-        <p className="mt-5 text-xl text-muted-foreground">{content.description}</p>
-        {content.supersededBy && (
-          <p className="mt-5 rounded-xl border border-amber-200 bg-amber-50 p-4 text-base text-amber-900">
-            本内容已被更新版本替代，请查看{" "}
-            {replacement ? (
-              <Link href={`/news/${replacement.slug}/`}>{replacement.title}</Link>
-            ) : (
-              "最新内容"
-            )}
-            。
-          </p>
-        )}
-        <KeyFactsPanel content={content} />
-        <div
-          className="prose mt-10 max-w-none"
-          dangerouslySetInnerHTML={{ __html: content.body }}
-        />
-        <section className="mt-10 rounded-xl border bg-surface-muted p-5" aria-labelledby="sources">
-          <h2 id="sources" className="text-lg font-semibold">
-            官方来源
-          </h2>
-          <ul className="mt-3 space-y-3">
-            {content.officialSources.map((source) => (
-              <OfficialSourceCard key={source.id} source={source} />
-            ))}
-          </ul>
-        </section>
-        {related.length > 0 && (
-          <section className="mt-10" aria-labelledby="related">
-            <h2 id="related" className="text-lg font-semibold">
-              相关内容
-            </h2>
-            <ul className="mt-3 list-disc pl-6">
-              {related.map((item) => (
-                <li key={item.id}>
-                  <Link href={`/news/${item.slug}/`}>{item.title}</Link>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-      </article>
+    <>
+      <ContentDetailLayout
+        meta={
+          <>
+            <span>新闻 · 加拿大移民信息简报</span>
+            <PolicyStatusBadge status={content.policyStatus} />
+            <span>发布于：{formatDateOnly(content.publishedAt)}</span>
+            <span>最后核验：{formatDateOnly(content.lastVerifiedAt)}</span>
+          </>
+        }
+        title={content.title}
+        description={content.description}
+        notice={
+          content.supersededBy ? (
+            <p className="mt-5 rounded-xl border border-amber-200 bg-amber-50 p-4 text-base text-amber-900">
+              本内容已被更新版本替代，请查看{" "}
+              {replacement ? (
+                <Link href={`/news/${replacement.slug}/`}>{replacement.title}</Link>
+              ) : (
+                "最新内容"
+              )}
+              。
+            </p>
+          ) : undefined
+        }
+        body={
+          <div
+            className="prose mt-10 max-w-none"
+            dangerouslySetInnerHTML={{ __html: content.body }}
+          />
+        }
+        facts={<KeyFactsPanel content={content} />}
+        share={
+          <ShareBar
+            url={siteConfig.baseUrl + contentPath(content)}
+            title={content.title}
+            description={content.description}
+          />
+        }
+        sources={<OfficialSourcesSection sources={content.officialSources} />}
+        related={<RelatedContentSection items={related} />}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -136,6 +139,6 @@ export default async function NewsPage({ params }: { params: Promise<{ slug: str
           ]),
         }}
       />
-    </main>
+    </>
   );
 }
