@@ -24,6 +24,8 @@
 - Vercel 或同类静态/混合部署；
 - GitHub Actions 运行检查。
 
+站点绝对 URL 由 `NEXT_PUBLIC_SITE_URL` 优先覆盖；未配置时在 Vercel 使用 `VERCEL_PROJECT_PRODUCTION_URL` 或 `VERCEL_URL`，本地开发和无部署环境回退到 `http://localhost:3000`。生产环境使用的非本地 URL 必须为 HTTPS。
+
 首版优先普通 Markdown，而不是允许任意 React 表达式的 MDX。确有交互图表需求时，对少量可信页面开放 MDX。具体依赖版本和库选择在实现前锁定，并写入 package.json 与 ADR。
 
 M1 使用 App Router 静态生成；CSS variables 是颜色和圆角的单一来源，Tailwind 负责布局与响应式组合。重复的交互样式通过基础 UI 变体复用，页面特有的布局组合保留在组件中。中文字体采用系统优先字体栈，不加载远程字体。

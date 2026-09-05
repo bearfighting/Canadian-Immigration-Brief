@@ -8,8 +8,40 @@ import type { PublicContent } from "@/lib/content/public";
 import { filterAndPaginateContent, type ContentListItem } from "@/lib/content/browser";
 import { redirects } from "@/lib/redirects";
 import { createShareLinks } from "@/lib/share";
+import { resolveBaseUrl } from "@/lib/site";
 
 const contentSchema = createContentSchema(new Date("2026-09-04T23:59:59.000Z"));
+
+describe("site URL resolution", () => {
+  it("prefers the explicit site URL", () => {
+    expect(
+      resolveBaseUrl({
+        configuredBaseUrl: "https://example.com/",
+        vercelProjectProductionUrl: "project.vercel.app",
+        vercelUrl: "deployment.vercel.app",
+      }),
+    ).toBe("https://example.com");
+  });
+
+  it("uses the stable Vercel project URL before the deployment URL", () => {
+    expect(
+      resolveBaseUrl({
+        vercelProjectProductionUrl: "project.vercel.app",
+        vercelUrl: "deployment.vercel.app",
+      }),
+    ).toBe("https://project.vercel.app");
+  });
+
+  it("falls back to the current Vercel deployment URL", () => {
+    expect(resolveBaseUrl({ vercelUrl: "deployment.vercel.app" })).toBe(
+      "https://deployment.vercel.app",
+    );
+  });
+
+  it("uses localhost when no deployment URL is available", () => {
+    expect(resolveBaseUrl({})).toBe("http://localhost:3000");
+  });
+});
 
 const valid = {
   id: "test-news",
