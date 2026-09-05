@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { redirects } from "@/lib/redirects";
 
@@ -12,6 +13,22 @@ export function generateStaticParams() {
   return redirects
     .filter((item) => item.from.startsWith("/programs/") && item.from.endsWith("/"))
     .map((item) => ({ slug: item.from.slice("/programs/".length, -1) }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const target = redirectForSlug(slug);
+  return target
+    ? {
+        title: "页面地址已更新",
+        description: "该项目页面已迁移到新的内容地址。",
+        alternates: { canonical: target.to },
+      }
+    : {};
 }
 
 export default async function LegacyProgramPage({ params }: { params: Promise<{ slug: string }> }) {

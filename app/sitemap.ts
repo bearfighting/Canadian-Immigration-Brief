@@ -12,6 +12,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: siteConfig.baseUrl + "/content/" },
     { url: siteConfig.baseUrl + "/news/" },
     { url: siteConfig.baseUrl + "/data/" },
+    { url: siteConfig.baseUrl + "/privacy/" },
+    { url: siteConfig.baseUrl + "/disclaimer/" },
+    { url: siteConfig.baseUrl + "/corrections/" },
     ...content.map((item) => ({
       url: siteConfig.baseUrl + contentPath(item),
       lastModified: item.updatedAt,
