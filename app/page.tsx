@@ -35,6 +35,31 @@ export default async function HomePage() {
           ))}
         </div>
       </section>
+      <section className="mt-10 max-w-3xl" aria-labelledby="content-entrances">
+        <h2 id="content-entrances" className="mb-4 text-2xl font-semibold">
+          按栏目浏览
+        </h2>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <Link className="rounded-xl border p-4 text-brand" href="/content/?type=policy-explainer">
+            政策解释
+          </Link>
+          <Link className="rounded-xl border p-4 text-brand" href="/content/?type=program-guide">
+            项目指南
+          </Link>
+          <Link className="rounded-xl border p-4 text-brand" href="/content/?province=bc">
+            省级移民
+          </Link>
+          <Link className="rounded-xl border p-4 text-brand" href="/content/?q=学习许可">
+            留学与工作
+          </Link>
+          <Link className="rounded-xl border p-4 text-brand" href="/content/?q=永久居民">
+            永久居民
+          </Link>
+          <Link className="rounded-xl border p-4 text-brand" href="/data/">
+            数据现况（建设中）
+          </Link>
+        </div>
+      </section>
     </main>
   );
 }

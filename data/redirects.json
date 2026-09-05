@@ -1,1 +1,6 @@
-[]
+[
+  {
+    "from": "/programs/bc-pnp-skilled-worker/",
+    "to": "/content/bc-pnp-skilled-worker/"
+  }
+]

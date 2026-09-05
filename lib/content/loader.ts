@@ -117,6 +117,14 @@ export async function getPublishedContent(options?: {
         item.review.status === "approved" &&
         (!options?.contentType || item.contentType === options.contentType),
     )
+    .sort((left, right) => {
+      const updatedDifference = right.updatedAt.getTime() - left.updatedAt.getTime();
+      if (updatedDifference !== 0) return updatedDifference;
+      const publishedDifference =
+        (right.publishedAt?.getTime() ?? 0) - (left.publishedAt?.getTime() ?? 0);
+      if (publishedDifference !== 0) return publishedDifference;
+      return left.id.localeCompare(right.id);
+    })
     .map(toPublicContent);
 }
 

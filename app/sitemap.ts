@@ -9,6 +9,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const content = await getPublishedContent();
   return [
     { url: siteConfig.baseUrl },
+    { url: siteConfig.baseUrl + "/content/" },
+    { url: siteConfig.baseUrl + "/news/" },
+    { url: siteConfig.baseUrl + "/data/" },
     ...content.map((item) => ({
       url: siteConfig.baseUrl + contentPath(item),
       lastModified: item.updatedAt,

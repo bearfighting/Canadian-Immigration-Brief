@@ -5,6 +5,8 @@ import { getPublishedContent, parseMarkdown, validateContentGraph } from "@/lib/
 import { renderRss } from "@/lib/seo/rss";
 import { formatDateOnly } from "@/lib/format/date";
 import type { PublicContent } from "@/lib/content/public";
+import { filterAndPaginateContent, type ContentListItem } from "@/lib/content/browser";
+import { redirects } from "@/lib/redirects";
 
 const contentSchema = createContentSchema(new Date("2026-09-04T23:59:59.000Z"));
 
@@ -158,6 +160,12 @@ describe("content schema", () => {
     expect(news.some((item) => item.contentType === "program-guide")).toBe(false);
   });
 
+  it("orders published content by update date, publication date, then ID", async () => {
+    const news = await getPublishedContent({ contentType: "news" });
+    expect(news[0]?.slug).toBe("express-entry-physicians-draw-september-2026");
+    expect(news.at(-1)?.slug).toBe("express-entry-2026-new-categories");
+  });
+
   it("accepts every documented topic", () => {
     const topics = [
       "visitor",
@@ -200,5 +208,70 @@ describe("content schema", () => {
 
   it("formats calendar dates without timezone drift", () => {
     expect(formatDateOnly(new Date("2026-09-01"))).toBe("2026/9/1");
+  });
+
+  it("validates legacy internal redirect configuration", () => {
+    expect(redirects).toEqual([
+      {
+        from: "/programs/bc-pnp-skilled-worker/",
+        to: "/content/bc-pnp-skilled-worker/",
+      },
+    ]);
+  });
+});
+
+describe("content browser", () => {
+  const content = Array.from(
+    { length: 11 },
+    (_, index) =>
+      ({
+        id: `item-${index}`,
+        title: index === 10 ? "医生类别更新" : `公开内容 ${index}`,
+        description: index === 10 ? "医生相关政策摘要" : "普通摘要",
+        slug: `item-${index}`,
+        contentType: index === 10 ? "policy-explainer" : "news",
+        updatedAt: new Date("2026-09-05"),
+        policyStatus: index === 10 ? "announced" : "effective",
+        jurisdictions: index === 10 ? ["federal"] : ["bc"],
+        programs: index === 10 ? ["express-entry"] : [],
+      }) as ContentListItem,
+  );
+
+  it("returns at most ten items and clamps pages", () => {
+    expect(filterAndPaginateContent(content).items).toHaveLength(10);
+    expect(filterAndPaginateContent(content, { page: 2 }).items).toHaveLength(1);
+    expect(filterAndPaginateContent(content, { page: 99 }).page).toBe(2);
+    expect(filterAndPaginateContent(content, { page: 0 }).page).toBe(1);
+  });
+
+  it("combines type, province, program, status and title search filters", () => {
+    const result = filterAndPaginateContent(content, {
+      type: "policy-explainer",
+      province: "federal",
+      program: "express-entry",
+      status: "announced",
+      query: "医生",
+    });
+    expect(result.totalItems).toBe(1);
+    expect(result.items[0]?.id).toBe("item-10");
+  });
+
+  it("includes a project guide when filtering by its own project ID", () => {
+    const guide = {
+      ...content[0],
+      id: "express-entry",
+      contentType: "program-guide",
+      programs: [],
+    } as ContentListItem;
+    const result = filterAndPaginateContent([guide], { program: "express-entry" });
+    expect(result.totalItems).toBe(1);
+    expect(result.items[0]?.id).toBe("express-entry");
+  });
+
+  it("returns an empty result without producing an invalid page", () => {
+    const result = filterAndPaginateContent(content, { query: "不存在" });
+    expect(result.items).toHaveLength(0);
+    expect(result.totalItems).toBe(0);
+    expect(result.page).toBe(1);
   });
 });
