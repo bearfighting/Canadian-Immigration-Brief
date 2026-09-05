@@ -1,6 +1,7 @@
 import { z } from "zod";
 import vocabulary from "@/data/controlled-vocabulary.json";
 import officialDomains from "@/data/official-domains.json";
+import { policyStatuses } from "@/lib/content/types";
 
 const sourceBaseSchema = z.object({
   id: z.string().min(1),
@@ -66,9 +67,7 @@ const contentBaseSchema = z.object({
   publishedAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date(),
   lastVerifiedAt: z.coerce.date(),
-  policyStatus: z
-    .enum(["effective", "announced", "consultation", "suspended", "expired", "unconfirmed"])
-    .optional(),
+  policyStatus: z.enum(policyStatuses).optional(),
   importance: z.enum(["critical", "high", "normal", "low"]).optional(),
   jurisdictions: z.array(z.string()).min(1),
   topics: z.array(z.string()).min(1),

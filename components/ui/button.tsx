@@ -16,6 +16,10 @@ const buttonVariants = cva(
   },
 );
 
+export const actionVariants = cva(
+  "rounded-lg border bg-white px-3 py-2 text-sm font-medium text-brand transition hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+);
+
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {}
 

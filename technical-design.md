@@ -1,7 +1,7 @@
 # 加拿大移民中文信息网站：技术设计
 
-> 状态：工作稿 v0.3
-> 更新日期：2026-09-04
+> 状态：工作稿 v0.4
+> 更新日期：2026-09-05
 
 ## 1. 技术目标
 
@@ -26,7 +26,7 @@
 
 首版优先普通 Markdown，而不是允许任意 React 表达式的 MDX。确有交互图表需求时，对少量可信页面开放 MDX。具体依赖版本和库选择在实现前锁定，并写入 package.json 与 ADR。
 
-M1 使用 App Router 静态生成；CSS variables 是颜色和圆角的单一来源，Tailwind 负责布局与响应式组合。中文字体采用系统优先字体栈，不加载远程字体。
+M1 使用 App Router 静态生成；CSS variables 是颜色和圆角的单一来源，Tailwind 负责布局与响应式组合。重复的交互样式通过基础 UI 变体复用，页面特有的布局组合保留在组件中。中文字体采用系统优先字体栈，不加载远程字体。
 
 公开页面、RSS、sitemap 和搜索索引统一消费经过状态过滤的公开内容集合；原始 Content 不直接暴露给输出层。
 
@@ -55,6 +55,8 @@ lib/
 ├── seo/
 └── validation/
 ```
+
+内容详情页由 `components/content/content-detail-layout.tsx` 统一编排标题、正文、关键信息、分享、来源和相关内容，来源与相关内容区块由 `content-detail-sections.tsx` 复用；新闻与非新闻页面只负责传入类型差异。列表查询参数解析和生成集中在 `lib/content/query.ts`，内容过滤和分页保留在 `lib/content/browser.ts`。领域状态类型位于 `lib/content/types.ts`，供校验层和界面层共同使用，避免界面直接依赖 Schema 定义。
 
 ## 4. 内容构建流程
 
@@ -103,6 +105,7 @@ Markdown/JSON
 - `datePublished`、`dateModified` 和作者信息；
 - 当前指南与历史新闻使用不同的结构化数据类型和视觉标识；
 - 基础 Open Graph metadata；分享图延期至后续视觉资源准备完成后；
+- 详情页分享使用本地组件、平台分享链接和 Web Share API，不加载社交平台 SDK，不记录分享统计；
 - 标签页达到最低内容量后才允许索引；
 - 搜索、组合筛选、草稿和薄内容页设置 `noindex`。
 
