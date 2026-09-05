@@ -41,6 +41,16 @@ describe("site URL resolution", () => {
   it("uses localhost when no deployment URL is available", () => {
     expect(resolveBaseUrl({})).toBe("http://localhost:3000");
   });
+
+  it("treats blank environment values as unset", () => {
+    expect(
+      resolveBaseUrl({
+        configuredBaseUrl: "  ",
+        vercelProjectProductionUrl: "  ",
+        vercelUrl: "  ",
+      }),
+    ).toBe("http://localhost:3000");
+  });
 });
 
 const valid = {

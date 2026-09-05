@@ -4,6 +4,11 @@ type SiteEnvironment = {
   vercelUrl?: string;
 };
 
+function optionalEnvironmentValue(value?: string): string | undefined {
+  const normalized = value?.trim();
+  return normalized || undefined;
+}
+
 export function resolveBaseUrl(
   { configuredBaseUrl, vercelProjectProductionUrl, vercelUrl }: SiteEnvironment = {
     configuredBaseUrl: process.env.NEXT_PUBLIC_SITE_URL,
@@ -11,19 +16,24 @@ export function resolveBaseUrl(
     vercelUrl: process.env.VERCEL_URL,
   },
 ): string {
+  const explicitUrl = optionalEnvironmentValue(configuredBaseUrl);
+  const projectUrl = optionalEnvironmentValue(vercelProjectProductionUrl);
+  const deploymentUrl = optionalEnvironmentValue(vercelUrl);
   const rawBaseUrl =
-    configuredBaseUrl ??
-    (vercelProjectProductionUrl
-      ? `https://${vercelProjectProductionUrl}`
-      : vercelUrl
-        ? `https://${vercelUrl}`
+    explicitUrl ??
+    (projectUrl
+      ? `https://${projectUrl}`
+      : deploymentUrl
+        ? `https://${deploymentUrl}`
         : "http://localhost:3000");
 
   return new URL(rawBaseUrl).toString().replace(/\/$/, "");
 }
 
-const configuredBaseUrl = process.env.NEXT_PUBLIC_SITE_URL;
-const vercelBaseUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL;
+const configuredBaseUrl = optionalEnvironmentValue(process.env.NEXT_PUBLIC_SITE_URL);
+const vercelBaseUrl = optionalEnvironmentValue(
+  process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL,
+);
 const resolvedBaseUrl = resolveBaseUrl();
 const isLocalFallback = !configuredBaseUrl && !vercelBaseUrl;
 
