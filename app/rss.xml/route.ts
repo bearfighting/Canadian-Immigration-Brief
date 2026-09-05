@@ -5,6 +5,6 @@ import { siteConfig } from "@/lib/site";
 export const dynamic = "force-static";
 
 export async function GET() {
-  const xml = renderRss(await getPublishedContent({ contentType: "news" }), siteConfig.baseUrl);
+  const xml = renderRss(await getPublishedContent(), siteConfig.baseUrl);
   return new Response(xml, { headers: { "Content-Type": "application/rss+xml; charset=utf-8" } });
 }

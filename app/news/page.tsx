@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { getPublishedContent } from "@/lib/content/loader";
+import { formatDateOnly } from "@/lib/format/date";
 
 export const metadata: Metadata = {
   title: "最新动态",
@@ -20,9 +21,7 @@ export default async function NewsIndexPage() {
         <div className="mt-8 space-y-4">
           {content.map((item) => (
             <Card key={item.id}>
-              <p className="text-sm text-muted-foreground">
-                {item.updatedAt.toLocaleDateString("zh-CN")}
-              </p>
+              <p className="text-sm text-muted-foreground">{formatDateOnly(item.updatedAt)}</p>
               <h2 className="mt-2 text-xl font-semibold">
                 <Link href={`/news/${item.slug}/`}>{item.title}</Link>
               </h2>

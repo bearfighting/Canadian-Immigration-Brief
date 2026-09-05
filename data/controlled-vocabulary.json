@@ -21,5 +21,5 @@
     "permanent-resident",
     "professional-observer"
   ],
-  "programs": ["express-entry"]
+  "programs": ["express-entry", "bc-skilled-worker", "ontario-workforce-priority"]
 }

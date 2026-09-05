@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { createContentSchema, type Content } from "@/lib/validation/content";
 import { getPublishedContent, parseMarkdown, validateContentGraph } from "@/lib/content/loader";
 import { renderRss } from "@/lib/seo/rss";
+import { formatDateOnly } from "@/lib/format/date";
 import type { PublicContent } from "@/lib/content/public";
 
 const contentSchema = createContentSchema(new Date("2026-09-04T23:59:59.000Z"));
@@ -148,7 +149,7 @@ describe("content schema", () => {
   it("does not expose draft content in the published collection", async () => {
     const published = await getPublishedContent();
     expect(published.some((item) => item.slug === "sample-draft")).toBe(false);
-    expect(published.some((item) => item.slug === "sample-policy-update")).toBe(true);
+    expect(published.some((item) => item.slug === "sample-policy-update")).toBe(false);
   });
 
   it("filters published content by content type", async () => {
@@ -179,5 +180,25 @@ describe("content schema", () => {
     );
     expect(rss).toContain("A &amp; B");
     expect(rss).toContain("&lt;测试&gt;");
+  });
+
+  it("uses public paths for non-news RSS items", () => {
+    const rss = renderRss(
+      [
+        {
+          slug: "guide",
+          contentType: "program-guide",
+          title: "指南",
+          description: "摘要",
+        } as PublicContent,
+      ],
+      "https://example.com",
+    );
+    expect(rss).toContain("https://example.com/content/guide/");
+    expect(rss).not.toContain("https://example.com/news/guide/");
+  });
+
+  it("formats calendar dates without timezone drift", () => {
+    expect(formatDateOnly(new Date("2026-09-01"))).toBe("2026/9/1");
   });
 });

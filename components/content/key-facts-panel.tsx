@@ -1,5 +1,6 @@
 import type { PublicContent } from "@/lib/content/public";
 import { PolicyStatusBadge } from "@/components/content/policy-status-badge";
+import { formatDateOnly } from "@/lib/format/date";
 
 const audienceLabels: Record<string, string> = {
   "prospective-student": "计划来加学习者",
@@ -24,11 +25,11 @@ export function KeyFactsPanel({ content }: { content: PublicContent }) {
         </div>
         <div>
           <dt className="text-muted-foreground">发布日期</dt>
-          <dd>{content.publishedAt?.toLocaleDateString("zh-CN") ?? "未提供"}</dd>
+          <dd>{formatDateOnly(content.publishedAt)}</dd>
         </div>
         <div>
           <dt className="text-muted-foreground">生效日期</dt>
-          <dd>{content.effectiveAt?.toLocaleDateString("zh-CN") ?? "尚未公布"}</dd>
+          <dd>{content.effectiveAt ? formatDateOnly(content.effectiveAt) : "尚未公布"}</dd>
         </div>
         <div>
           <dt className="text-muted-foreground">影响人群</dt>

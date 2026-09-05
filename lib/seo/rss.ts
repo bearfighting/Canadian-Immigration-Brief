@@ -1,4 +1,5 @@
 import type { PublicContent } from "@/lib/content/public";
+import { contentPath } from "@/lib/content/routes";
 
 function escapeXml(value: string) {
   const entities: Record<string, string> = {
@@ -16,11 +17,11 @@ export function renderRss(items: PublicContent[], baseUrl: string) {
     .map(
       (item) =>
         '<item><guid isPermaLink="true">' +
-        escapeXml(baseUrl + "/news/" + item.slug + "/") +
+        escapeXml(baseUrl + contentPath(item)) +
         "</guid><title>" +
         escapeXml(item.title) +
         "</title><link>" +
-        escapeXml(baseUrl + "/news/" + item.slug + "/") +
+        escapeXml(baseUrl + contentPath(item)) +
         "</link><description>" +
         escapeXml(item.description) +
         "</description>" +

@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { getPublishedContent } from "@/lib/content/loader";
+import { contentPath, contentTypeLabel } from "@/lib/content/routes";
+import { formatDateOnly } from "@/lib/format/date";
 
 export default async function HomePage() {
-  const content = await getPublishedContent({ contentType: "news" });
+  const content = (await getPublishedContent()).slice(0, 12);
   return (
     <main className="mx-auto max-w-[1200px] px-4 py-12 sm:px-8">
       <section className="max-w-3xl">
@@ -22,10 +24,10 @@ export default async function HomePage() {
             <Card key={item.id}>
               <article>
                 <p className="mb-2 text-sm text-muted-foreground">
-                  {item.contentType} · {item.updatedAt.toLocaleDateString("zh-CN")}
+                  {contentTypeLabel(item.contentType)} · {formatDateOnly(item.updatedAt)}
                 </p>
                 <h3 className="text-xl font-semibold">
-                  <Link href={`/news/${item.slug}/`}>{item.title}</Link>
+                  <Link href={contentPath(item)}>{item.title}</Link>
                 </h3>
                 <p className="mt-2 text-muted-foreground">{item.description}</p>
               </article>

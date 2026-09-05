@@ -5,6 +5,7 @@ import { KeyFactsPanel } from "@/components/content/key-facts-panel";
 import { OfficialSourceCard } from "@/components/content/official-source-card";
 import Link from "next/link";
 import { siteConfig } from "@/lib/site";
+import { formatDateOnly } from "@/lib/format/date";
 import {
   getContentById,
   getContentBySlug,
@@ -49,8 +50,8 @@ export default async function NewsPage({ params }: { params: Promise<{ slug: str
         <div className="mb-6 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
           <span>新闻 · 加拿大移民信息简报</span>
           <PolicyStatusBadge status={content.policyStatus} />
-          <span>发布于：{content.publishedAt?.toLocaleDateString("zh-CN") ?? "未提供"}</span>
-          <span>最后核验：{content.lastVerifiedAt.toLocaleDateString("zh-CN")}</span>
+          <span>发布于：{formatDateOnly(content.publishedAt)}</span>
+          <span>最后核验：{formatDateOnly(content.lastVerifiedAt)}</span>
         </div>
         <h1 className="text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
           {content.title}

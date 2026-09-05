@@ -5,7 +5,7 @@ description: 这是一篇用于验证内容管线和页面渲染的样例新闻�
 slug: sample-policy-update
 contentType: news
 language: zh-CN
-publicationStatus: published
+publicationStatus: draft
 author: 加拿大移民信息简报
 editor: project-owner
 publishedAt: "2026-09-04"
@@ -31,9 +31,9 @@ officialSources:
 supplementarySources: []
 featured: false
 review:
-  status: approved
-  reviewer: project-owner
-  reviewedAt: "2026-09-04"
+  status: pending
+  reviewer: null
+  reviewedAt: null
 ---
 
 ## 一分钟了解
