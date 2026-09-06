@@ -11,6 +11,8 @@
 - 自动化只能生成草稿，不能绕过人工审核；
 - 数据结构为未来数据库迁移保留清晰边界。
 
+当前实施分为两个阶段：阶段一负责网站产品和技术能力；阶段二负责内容管理与发布运营。内容文件和审核字段属于网站需要支持的领域边界，但内容生产节奏、staging 发布和持续运营不应反向耦合页面组件或阻塞阶段一开发。
+
 ## 2. 推荐技术栈
 
 - Next.js App Router + TypeScript；
@@ -33,6 +35,10 @@ M1 使用 App Router 静态生成；CSS variables 是颜色和圆角的单一来
 公开页面、RSS、sitemap 和搜索索引统一消费经过状态过滤的公开内容集合；原始 Content 不直接暴露给输出层。
 
 首页快速发现使用原生 GET 表单和现有内容查询参数，栏目、地区、项目和政策状态入口复用受控词表；首页不复制过滤逻辑，也不引入第三方搜索服务、自动聚类或用户行为统计。
+
+当前网站开发以 News Infrastructure 为重点。新闻继续使用现有 camelCase 内容模型和统一公开投影，不直接改用外部计划中的 snake_case 字段；`officialSources` 与 `supplementarySources` 继续区分官方来源和补充来源。新闻日期字段逐步支持 `publishedAt`、`announcedAt`、`eventAt`、`effectiveAt`、`updatedAt` 和 `lastVerifiedAt`，新增字段保持 optional，以兼容现有 Markdown 内容。
+
+新闻列表和详情页优先静态生成，主要文章内容必须在构建生成的 HTML 中可读；客户端 JavaScript 只负责筛选、分页和其他增强交互。新闻 Fact Box、来源卡片、相关项目入口和 RSS/sitemap/JSON-LD 统一消费公开内容集合。文章级更新/更正历史、AI News Desk、自动采集和自动发布属于阶段二内容管理与发布运营，不进入页面基础设施。
 
 ## 3. 建议代码结构
 
