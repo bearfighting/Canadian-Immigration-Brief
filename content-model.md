@@ -201,6 +201,7 @@ published -> effective -> superseded/expired
 - 当前指南必须链接替代或修改旧政策的新内容；
 - 更正不得悄悄覆盖，应记录更正日期和说明；
 - “已发布”与“已生效”分别由 `publicationStatus` 和 `policyStatus` 表示。
+- `policyStatus` 是编辑、审核、检索和自动化工作流属性；新闻前台默认不显示状态标签，只有在状态会改变读者当前判断时才显示读者提示。它不得替代正文中的自然语言事实说明。
 
 ## 10. Markdown 与结构化数据边界
 

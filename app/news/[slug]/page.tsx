@@ -7,9 +7,9 @@ import {
   RelatedContentSection,
 } from "@/components/content/content-detail-sections";
 import { KeyFactsPanel } from "@/components/content/key-facts-panel";
-import { PolicyStatusBadge } from "@/components/content/policy-status-badge";
 import { ShareBar } from "@/components/content/share-bar";
 import { contentPath } from "@/lib/content/routes";
+import { getReaderNotice } from "@/lib/content/reader-notice";
 import { formatDateOnly } from "@/lib/format/date";
 import {
   getContentById,
@@ -58,6 +58,39 @@ export default async function NewsPage({ params }: { params: Promise<{ slug: str
     ? await getContentById(content.supersededBy, { contentType: "news" })
     : undefined;
   const related = await getRelatedContent(content, { contentType: "news" });
+  const readerNotice = getReaderNotice(content);
+  const notice = readerNotice ? (
+    <aside
+      className={
+        readerNotice.tone === "warning"
+          ? "mt-5 rounded-xl border border-amber-200 bg-amber-50 p-4 text-base text-amber-900"
+          : "mt-5 rounded-xl border border-blue-200 bg-blue-50 p-4 text-base text-blue-900"
+      }
+      aria-label="文章提示"
+    >
+      {readerNotice.kind === "superseded" ? (
+        <p>
+          {replacement ? (
+            <>
+              本文内容已被更新版本替代，请查看{" "}
+              <Link href={`/news/${replacement.slug}/`}>{replacement.title}</Link>。
+            </>
+          ) : (
+            readerNotice.title
+          )}
+        </p>
+      ) : readerNotice.kind === "not-yet-effective" ? (
+        <p>
+          {readerNotice.title} 生效日期：{formatDateOnly(readerNotice.effectiveAt)}。
+        </p>
+      ) : (
+        <>
+          <p>{readerNotice.title}</p>
+          <p className="mt-1">{readerNotice.description}</p>
+        </>
+      )}
+    </aside>
+  ) : undefined;
 
   return (
     <>
@@ -65,26 +98,12 @@ export default async function NewsPage({ params }: { params: Promise<{ slug: str
         meta={
           <>
             <span>新闻 · 加拿大移民信息简报</span>
-            <PolicyStatusBadge status={content.policyStatus} />
             <span>发布于：{formatDateOnly(content.publishedAt)}</span>
-            <span>最后核验：{formatDateOnly(content.lastVerifiedAt)}</span>
           </>
         }
         title={content.title}
         description={content.description}
-        notice={
-          content.supersededBy ? (
-            <p className="mt-5 rounded-xl border border-amber-200 bg-amber-50 p-4 text-base text-amber-900">
-              本内容已被更新版本替代，请查看{" "}
-              {replacement ? (
-                <Link href={`/news/${replacement.slug}/`}>{replacement.title}</Link>
-              ) : (
-                "最新内容"
-              )}
-              。
-            </p>
-          ) : undefined
-        }
+        notice={notice}
         body={
           <div
             className="prose mt-10 max-w-none"

@@ -5,7 +5,7 @@ test("published news is readable", async ({ page }) => {
   await expect(
     page.getByRole("heading", { name: "魁北克以外学习许可申请人的生活费证明标准上调至23,448加元" }),
   ).toBeVisible();
-  await expect(page.getByText("已生效").first()).toBeVisible();
+  await expect(page.getByText("政策状态", { exact: true })).toHaveCount(0);
   await expect(page.getByRole("heading", { name: "官方来源" }).first()).toBeVisible();
 });
 
@@ -78,6 +78,21 @@ test("news index only links to published content", async ({ page }) => {
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", "index,follow");
 });
 
+test("news pages hide routine policy metadata while keeping useful dates", async ({ page }) => {
+  await page.goto("/news/study-permit-financial-support-increase-2026/");
+  await expect(page.getByText("政策状态", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("最后核验日期", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("发布日期", { exact: true })).toBeVisible();
+  await expect(page.getByText("生效日期", { exact: true })).toBeVisible();
+});
+
+test("home discovery keeps policy status out of the main links", async ({ page }) => {
+  await page.goto("/");
+  await expect(
+    page.getByRole("complementary", { name: "快速发现" }).getByText("政策状态", { exact: true }),
+  ).toHaveCount(0);
+});
+
 test("news pagination and keyword search use query URLs", async ({ page }) => {
   await page.goto("/news/?page=2");
   await expect(page.getByText("共 9 篇内容，第 1/1 页")).toBeVisible();
@@ -100,10 +115,23 @@ test("all content and data placeholder are reachable", async ({ page }) => {
   await expect(page.getByRole("link", { name: "Express Entry 快速通道" })).toBeVisible();
   await page.goto("/programs/bc-pnp-skilled-worker/");
   await expect(page).toHaveURL(/\/content\/bc-pnp-skilled-worker\/$/);
+  await page.goto("/content/how-express-entry-category-selection-works/");
+  await expect(page.getByText("政策状态", { exact: true })).toBeVisible();
+  await expect(page.getByText("已生效", { exact: true })).toBeVisible();
+  await expect(page.getByText("最后核验日期", { exact: true })).toHaveCount(0);
   await page.goto("/data/");
   await expect(page.getByText("数据栏目正在建设中。")).toBeVisible();
   await page.goto("/content/?q=不存在的内容");
   await expect(page.getByRole("status")).toContainText("没有符合条件");
+});
+
+test("content browser keeps policy status as an advanced filter", async ({ page }) => {
+  await page.goto("/content/");
+  await expect(page.getByText("高级筛选", { exact: true })).toBeVisible();
+  await page.getByText("高级筛选", { exact: true }).click();
+  await page.getByLabel("政策状态").selectOption("announced");
+  await expect(page).toHaveURL(/\/content\/\?status=announced$/);
+  await expect(page.locator("details").filter({ hasText: "高级筛选" })).toHaveAttribute("open", "");
 });
 
 test("draft news is not publicly generated", async ({ page }) => {

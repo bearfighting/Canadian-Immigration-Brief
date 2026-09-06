@@ -11,18 +11,22 @@ const audienceLabels: Record<string, string> = {
 };
 
 export function KeyFactsPanel({ content }: { content: PublicContent }) {
+  const isNews = content.contentType === "news";
+
   return (
     <section className="my-8 rounded-xl border bg-surface-muted p-5" aria-labelledby="key-facts">
       <h2 id="key-facts" className="text-lg font-semibold">
         关键信息
       </h2>
       <dl className="mt-4 grid gap-3 text-base sm:grid-cols-2">
-        <div>
-          <dt className="text-muted-foreground">发布状态</dt>
-          <dd>
-            <PolicyStatusBadge status={content.policyStatus} />
-          </dd>
-        </div>
+        {!isNews && content.policyStatus ? (
+          <div>
+            <dt className="text-muted-foreground">政策状态</dt>
+            <dd>
+              <PolicyStatusBadge status={content.policyStatus} />
+            </dd>
+          </div>
+        ) : null}
         <div>
           <dt className="text-muted-foreground">发布日期</dt>
           <dd>{formatDateOnly(content.publishedAt)}</dd>
@@ -39,19 +43,22 @@ export function KeyFactsPanel({ content }: { content: PublicContent }) {
             <dd>{formatDateOnly(content.eventAt)}</dd>
           </div>
         ) : null}
-        <div>
-          <dt className="text-muted-foreground">生效日期</dt>
-          <dd>{content.effectiveAt ? formatDateOnly(content.effectiveAt) : "尚未公布"}</dd>
-        </div>
-        {content.contentType === "news" ? (
+        {isNews && content.effectiveAt ? (
+          <div>
+            <dt className="text-muted-foreground">生效日期</dt>
+            <dd>{formatDateOnly(content.effectiveAt)}</dd>
+          </div>
+        ) : !isNews ? (
+          <div>
+            <dt className="text-muted-foreground">生效日期</dt>
+            <dd>{content.effectiveAt ? formatDateOnly(content.effectiveAt) : "尚未公布"}</dd>
+          </div>
+        ) : null}
+        {isNews ? (
           <>
             <div>
               <dt className="text-muted-foreground">最近更新时间</dt>
               <dd>{formatDateOnly(content.updatedAt)}</dd>
-            </div>
-            <div>
-              <dt className="text-muted-foreground">最后核验日期</dt>
-              <dd>{formatDateOnly(content.lastVerifiedAt)}</dd>
             </div>
           </>
         ) : null}

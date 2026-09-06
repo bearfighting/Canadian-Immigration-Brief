@@ -10,6 +10,7 @@ import { redirects } from "@/lib/redirects";
 import { createShareLinks } from "@/lib/share";
 import { resolveBaseUrl } from "@/lib/site";
 import { buildQuery, programOptions } from "@/lib/content/query";
+import { getReaderNotice } from "@/lib/content/reader-notice";
 
 const contentSchema = createContentSchema(new Date("2026-09-04T23:59:59.000Z"));
 
@@ -372,5 +373,52 @@ describe("content browser", () => {
     expect(result.items).toHaveLength(0);
     expect(result.totalItems).toBe(0);
     expect(result.page).toBe(1);
+  });
+});
+
+describe("reader notices", () => {
+  const content = {
+    ...valid,
+    contentType: "news",
+    publishedAt: new Date("2026-09-01"),
+    updatedAt: new Date("2026-09-05"),
+    lastVerifiedAt: new Date("2026-09-05"),
+    officialSources: valid.officialSources.map((source) => ({
+      ...source,
+      accessedAt: new Date("2026-09-05"),
+    })),
+    review: {
+      status: "approved",
+      reviewer: "owner",
+      reviewedAt: new Date("2026-09-05"),
+    },
+  } as unknown as PublicContent;
+
+  it("prioritizes a superseded notice", () => {
+    expect(getReaderNotice({ ...content, supersededBy: "newer-news" })).toMatchObject({
+      kind: "superseded",
+      tone: "warning",
+    });
+  });
+
+  it("warns when a policy is suspended", () => {
+    expect(getReaderNotice({ ...content, policyStatus: "suspended" })).toMatchObject({
+      kind: "suspended",
+      tone: "warning",
+    });
+  });
+
+  it("shows the effective date for announced changes until editorial status is updated", () => {
+    const effectiveAt = new Date("2026-10-01");
+    expect(getReaderNotice({ ...content, policyStatus: "announced", effectiveAt })).toMatchObject({
+      kind: "not-yet-effective",
+      effectiveAt,
+    });
+  });
+
+  it("does not show a notice for effective or expired content without a replacement", () => {
+    expect(getReaderNotice({ ...content, policyStatus: "effective" })).toBeUndefined();
+    expect(getReaderNotice({ ...content, policyStatus: "expired" })).toBeUndefined();
+    expect(getReaderNotice({ ...content, policyStatus: "announced" })).toBeUndefined();
   });
 });

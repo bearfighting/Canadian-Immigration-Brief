@@ -54,6 +54,7 @@ export function ContentBrowser({
   const filters = useMemo(() => getFilters(searchParams, fixedType), [fixedType, searchParams]);
   const result = useMemo(() => filterAndPaginateContent(content, filters), [content, filters]);
   const programs = useMemo(() => selectOptions(content, "program"), [content]);
+  const [advancedOpen, setAdvancedOpen] = useState(Boolean(filters.status));
   const [searchDraft, setSearchDraft] = useState(filters.query ?? "");
   const hasFilters = Boolean(
     filters.type || filters.province || filters.program || filters.status || filters.query,
@@ -62,6 +63,10 @@ export function ContentBrowser({
   useEffect(() => {
     setSearchDraft(filters.query ?? "");
   }, [filters.query]);
+
+  useEffect(() => {
+    if (filters.status) setAdvancedOpen(true);
+  }, [filters.status]);
 
   useEffect(() => {
     const parameterized = searchParams.toString().length > 0;
@@ -97,14 +102,14 @@ export function ContentBrowser({
         <h1 className="mt-2 text-4xl font-semibold leading-tight tracking-tight">{title}</h1>
         <p className="mt-4 text-lg text-muted-foreground">{description}</p>
         <form
-          className="mt-8 grid gap-3 rounded-xl border bg-surface-muted p-4 sm:grid-cols-2 lg:grid-cols-3"
+          className="mt-8 grid gap-3 rounded-xl border bg-surface-muted p-4 sm:grid-cols-2"
           onSubmit={submitSearch}
         >
           {!fixedType && (
             <label className="grid gap-1 text-sm font-medium">
               栏目
               <select
-                className="rounded-lg border bg-white p-2"
+                className="h-10 rounded-lg border bg-white px-3"
                 value={filters.type ?? ""}
                 onChange={(event) =>
                   navigate({
@@ -124,7 +129,7 @@ export function ContentBrowser({
           <label className="grid gap-1 text-sm font-medium">
             省份/地区
             <select
-              className="rounded-lg border bg-white p-2"
+              className="h-10 rounded-lg border bg-white px-3"
               value={filters.province ?? ""}
               onChange={(event) => navigate({ province: event.target.value || undefined, page: 1 })}
             >
@@ -139,7 +144,7 @@ export function ContentBrowser({
           <label className="grid gap-1 text-sm font-medium">
             项目
             <select
-              className="rounded-lg border bg-white p-2"
+              className="h-10 rounded-lg border bg-white px-3"
               value={filters.program ?? ""}
               onChange={(event) => navigate({ program: event.target.value || undefined, page: 1 })}
             >
@@ -151,30 +156,39 @@ export function ContentBrowser({
               ))}
             </select>
           </label>
-          <label className="grid gap-1 text-sm font-medium">
-            政策状态
-            <select
-              className="rounded-lg border bg-white p-2"
-              value={filters.status ?? ""}
-              onChange={(event) =>
-                navigate({
-                  status: (event.target.value || undefined) as ContentBrowserFilters["status"],
-                  page: 1,
-                })
-              }
-            >
-              <option value="">全部状态</option>
-              {statusOptions.map(([value, label]) => (
-                <option key={value} value={value}>
-                  {label}
-                </option>
-              ))}
-            </select>
-          </label>
+          <details
+            open={advancedOpen}
+            onToggle={(event) => setAdvancedOpen(event.currentTarget.open)}
+            className="overflow-hidden rounded-lg border bg-white sm:col-span-2"
+          >
+            <summary className="flex h-10 cursor-pointer items-center px-3 text-sm font-medium">
+              高级筛选
+            </summary>
+            <label className="mt-3 grid max-w-sm gap-1 px-3 pb-3 text-sm font-medium">
+              政策状态
+              <select
+                className="h-10 rounded-lg border bg-white px-3"
+                value={filters.status ?? ""}
+                onChange={(event) =>
+                  navigate({
+                    status: (event.target.value || undefined) as ContentBrowserFilters["status"],
+                    page: 1,
+                  })
+                }
+              >
+                <option value="">全部状态</option>
+                {statusOptions.map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </details>
           <label className="grid gap-1 text-sm font-medium sm:col-span-2">
             搜索标题或摘要
             <input
-              className="rounded-lg border bg-white p-2"
+              className="h-10 rounded-lg border bg-white px-3"
               value={searchDraft}
               placeholder="例如：医生、学习许可"
               aria-label="搜索标题或摘要"

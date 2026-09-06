@@ -1,13 +1,7 @@
 import { ContentSearchForm } from "@/components/content/content-search-form";
 import { DiscoveryLinkGroup } from "@/components/content/discovery-link-group";
 import type { ContentListItem } from "@/lib/content/browser";
-import {
-  buildQuery,
-  programOptions,
-  provinceOptions,
-  statusOptions,
-  typeOptions,
-} from "@/lib/content/query";
+import { buildQuery, programOptions, provinceOptions, typeOptions } from "@/lib/content/query";
 import { contentPath } from "@/lib/content/routes";
 
 export function HomeDiscoverySidebar({ programGuides }: { programGuides: ContentListItem[] }) {
@@ -43,13 +37,6 @@ export function HomeDiscoverySidebar({ programGuides }: { programGuides: Content
             const guide = guideByProgram.get(program);
             return guide ? [{ href: contentPath(guide), label }] : [];
           })}
-        />
-        <DiscoveryLinkGroup
-          title="政策状态"
-          links={statusOptions.map(([value, label]) => ({
-            href: `/content/${buildQuery({ status: value })}`,
-            label,
-          }))}
         />
         <DiscoveryLinkGroup
           title="常用入口"
