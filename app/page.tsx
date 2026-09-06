@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { HomeDiscoverySidebar } from "@/components/content/home-discovery-sidebar";
 import { Card } from "@/components/ui/card";
 import { toContentListItem } from "@/lib/content/browser";
@@ -15,12 +16,26 @@ export default async function HomePage() {
   return (
     <main className="mx-auto max-w-[1200px] px-4 py-12 sm:px-8">
       <section>
-        <p className="mb-3 text-sm font-medium uppercase tracking-wide text-accent">
-          看懂加拿大移民政策与现实
-        </p>
-        <h1 className="mb-5 text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">
-          加拿大移民信息简报
-        </h1>
+        <div className="flex flex-row items-center gap-4 sm:gap-6">
+          <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl sm:h-32 sm:w-32">
+            <Image
+              src="/logo.png"
+              alt="加拿大移民信息简报标志"
+              width={128}
+              height={128}
+              priority
+              className="h-full w-full scale-[1.8] object-contain"
+            />
+          </div>
+          <div className="min-w-0">
+            <p className="mb-3 text-sm font-medium uppercase tracking-wide text-accent">
+              看懂加拿大移民政策与现实
+            </p>
+            <h1 className="mb-5 text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">
+              加拿大移民信息简报
+            </h1>
+          </div>
+        </div>
         <p className="text-xl text-muted-foreground">以中文解释政策变化、项目规则和官方信息。</p>
       </section>
       <div className="mt-12 grid items-start gap-10 lg:grid-cols-[minmax(0,760px)_minmax(280px,320px)]">
