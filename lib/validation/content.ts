@@ -12,6 +12,7 @@ const sourceBaseSchema = z.object({
     .refine((value) => value.startsWith("https://"), "来源必须使用 HTTPS"),
   language: z.enum(["en", "fr", "zh-CN"]),
   publishedAt: z.coerce.date().optional(),
+  publisher: z.string().min(1).optional(),
   accessedAt: z.coerce.date(),
 });
 
@@ -65,6 +66,8 @@ const contentBaseSchema = z.object({
   author: z.string().min(1),
   editor: z.string().min(1),
   publishedAt: z.coerce.date().optional(),
+  announcedAt: z.coerce.date().optional(),
+  eventAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date(),
   lastVerifiedAt: z.coerce.date(),
   policyStatus: z.enum(policyStatuses).optional(),

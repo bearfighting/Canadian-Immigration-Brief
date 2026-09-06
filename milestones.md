@@ -19,7 +19,7 @@
 
 对应历史里程碑：M0、M1、M3、M4 的本地技术验收，以及首页内容发现增强。
 
-### 阶段一当前重点：News Infrastructure
+## 当前执行阶段：News Infrastructure（阶段一子阶段）
 
 下一阶段以 News 为第一个扎实的内容类型，目标是完善新闻的结构化展示、静态归档、来源呈现、日期语义、事实框和测试覆盖。News 是当前开发重点，不代表网站最终定位为新闻门户。
 
@@ -29,17 +29,22 @@
 
 阶段一 News Infrastructure 完成标准：新闻列表和详情页在 JavaScript 不可用时仍能阅读主要内容；日期、状态、来源和相关项目表达清楚；公开新闻通过构建、链接、SEO、无障碍和响应式检查。
 
-News Infrastructure 执行清单：
+这是当前阶段的唯一开发清单。P0 为新闻基础能力，P1 为展示增强和专项验收；阶段二的内容管理与发布运营不在本清单内。
 
-- [ ] 在现有 camelCase 模型中加入 `announcedAt` 和 `eventAt` optional 字段；
-- [ ] 区分本站发布日期、官方公布日期、事件日期、生效日期、更新时间和最后核验日期；
-- [ ] 增强新闻 Fact Box，显示适用的日期、状态、影响人群和最后核验信息；
-- [ ] 检查新闻来源卡片的机构、语言、发布日期、访问日期和官方来源层级；
-- [ ] 确认 `/news/` 初始 HTML 在 JavaScript 不可用时仍包含主要新闻列表；
-- [ ] 检查新闻详情的 canonical、NewsArticle、BreadcrumbList、RSS 和 sitemap；
-- [ ] 检查新闻到项目指南、省级概览和相关解释文章的路径关系；
-- [ ] 增加日期、来源、静态归档和草稿隔离的单元/E2E 测试；
-- [ ] 完成新闻列表、详情页、来源、筛选、分页和移动端回归验收。
+### P0：新闻基础能力
+
+- [x] 在现有 camelCase 模型中加入 `announcedAt` 和 `eventAt` optional 字段；
+- [x] 区分本站发布日期、官方公布日期、事件日期、生效日期、更新时间和最后核验日期；
+- [x] 确认 `/news/` 初始 HTML 在 JavaScript 不可用时仍包含主要新闻列表；
+- [x] 增加日期、来源、静态归档和草稿隔离的单元/E2E 测试；
+
+### P1：新闻展示与验收
+
+- [x] 增强新闻 Fact Box，显示适用的日期、状态、影响人群和最后核验信息；
+- [x] 检查新闻来源卡片的机构、语言、发布日期、访问日期和官方来源层级；
+- [x] 检查新闻详情的 canonical、NewsArticle、BreadcrumbList、RSS 和 sitemap；
+- [x] 检查新闻到项目指南、省级概览和相关解释文章的路径关系；
+- [x] 完成新闻列表、详情页、来源、筛选、分页和移动端回归验收。
 
 ### 阶段二：内容管理与发布运营
 
@@ -231,15 +236,16 @@ Checklist：
 
 M4 本地验收证据（2026-09-05）：
 
-- 新增 `pnpm audit:static`，检查 27 个 HTML 文件、681 个站内链接、公开输出中的草稿隔离、详情页分享平台链接、sitemap、RSS 和新闻 JSON-LD；审计通过。
+- 新增 `pnpm audit:static`，检查 27 个 HTML 文件、705 个站内链接、9 个新闻详情页的公开输出、草稿隔离、详情页分享平台链接、sitemap、RSS 和新闻 JSON-LD；审计通过。
 - 新增 `/privacy/`、`/disclaimer/` 和 `/corrections/`，并由全局页脚提供入口；页面包含隐私边界、免责声明、利益披露和更正流程。
 - `@axe-core/playwright` 已覆盖首页、新闻、指南、内容列表、数据占位页及三类说明页面；核心页面无 axe 违规，移动端、键盘、reduced motion 和 200% 缩放场景通过。
-- 自动检查结果：Vitest 26/26、Playwright + axe 12/12、TypeScript、ESLint、Prettier、Next.js production build 和静态输出审计通过。
+- 自动检查结果：Vitest 35/35、Playwright 16/16（含 axe）、TypeScript、ESLint、Prettier、Next.js production build 和静态输出审计通过。
 - 外部验收待办：staging 发布/回滚尚未执行，非作者人员抽查尚未记录；两项完成前 M4 保持进行中。
 - 已知非阻断事项：静态导出下参数列表的 `noindex` 仍由客户端设置，旧路径 HTTP 301/308 仍需部署平台配置，均转入 M5 部署验收。
 - 分享验收证据：详情页使用 canonical URL 生成原生分享链接；X 使用 `x.com/intent/tweet`，并加入微博；未加载 Facebook/X/微信 SDK，不记录分享次数或平台统计；微信保留系统分享和复制链接路径。
 - 首页内容发现增强：快速发现侧栏已完成，包含原生 GET 搜索、受控分类入口、核心项目路径和响应式两栏布局；不引入自动聚类或第三方搜索服务。相关测试和构建证据见当前功能提交记录。
-- News Infrastructure 方向：根据 2026-09-05 新闻基础设施改进计划，下一项开发重点为新闻 Schema/日期语义、静态归档、Fact Box、来源展示和新闻质量测试；内容管理与发布运营继续留在阶段二。
+- News Infrastructure 完成记录（2026-09-05）：加入 optional `announcedAt`/`eventAt` 和来源 `publisher` 字段；新闻 Fact Box、来源机构/日期展示、绝对 canonical、`datePublished`/`dateModified`、无 JavaScript 新闻归档和静态输出审计已完成。9 篇公开新闻均生成静态详情页，2 篇事件新闻补充了官方记录明确支持的 `eventAt`；未明确的公布日期保持为空，不作推测。
+- News Infrastructure 自动检查：Prettier、TypeScript、ESLint、Vitest 35/35、Playwright 16/16（含 axe）、Next.js production build 和 `pnpm audit:static`（27 个 HTML、9 个新闻详情页、705 个站内链接）通过。静态审计同时校验 NewsArticle 作者/发布机构、RSS 新闻集合与 sitemap 一致性。
 
 ## Milestone 5：正式上线
 

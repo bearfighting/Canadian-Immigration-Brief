@@ -27,10 +27,34 @@ export function KeyFactsPanel({ content }: { content: PublicContent }) {
           <dt className="text-muted-foreground">发布日期</dt>
           <dd>{formatDateOnly(content.publishedAt)}</dd>
         </div>
+        {content.contentType === "news" && content.announcedAt ? (
+          <div>
+            <dt className="text-muted-foreground">官方公布日期</dt>
+            <dd>{formatDateOnly(content.announcedAt)}</dd>
+          </div>
+        ) : null}
+        {content.contentType === "news" && content.eventAt ? (
+          <div>
+            <dt className="text-muted-foreground">事件日期</dt>
+            <dd>{formatDateOnly(content.eventAt)}</dd>
+          </div>
+        ) : null}
         <div>
           <dt className="text-muted-foreground">生效日期</dt>
           <dd>{content.effectiveAt ? formatDateOnly(content.effectiveAt) : "尚未公布"}</dd>
         </div>
+        {content.contentType === "news" ? (
+          <>
+            <div>
+              <dt className="text-muted-foreground">最近更新时间</dt>
+              <dd>{formatDateOnly(content.updatedAt)}</dd>
+            </div>
+            <div>
+              <dt className="text-muted-foreground">最后核验日期</dt>
+              <dd>{formatDateOnly(content.lastVerifiedAt)}</dd>
+            </div>
+          </>
+        ) : null}
         <div>
           <dt className="text-muted-foreground">影响人群</dt>
           <dd>

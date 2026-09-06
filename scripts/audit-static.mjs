@@ -44,7 +44,14 @@ function routeForFile(file) {
   return `/${relative}`;
 }
 
-const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://m4-preview.example.com";
+const configuredBaseUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+let baseUrl;
+try {
+  baseUrl = new URL(configuredBaseUrl || "http://localhost:3000").toString().replace(/\/$/, "");
+} catch {
+  throw new Error("静态审计的站点 URL 无效：NEXT_PUBLIC_SITE_URL");
+}
+const newsDetailRoutes = [];
 for (const file of htmlFiles) {
   if (path.basename(file) === "404.html") continue;
   const page = fs.readFileSync(file, "utf8");
@@ -67,10 +74,23 @@ for (const file of htmlFiles) {
     const jsonLd = [...page.matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/gs)].map(
       (match) => JSON.parse(match[1]),
     );
+    const newsArticle = jsonLd.flat().find((item) => item["@type"] === "NewsArticle");
     const types = jsonLd.flat().map((item) => item["@type"]);
     if (!types.includes("NewsArticle") || !types.includes("BreadcrumbList")) {
       throw new Error(`新闻页缺少 JSON-LD：${route}`);
     }
+    if (
+      !newsArticle?.headline ||
+      !newsArticle.description ||
+      !newsArticle.datePublished ||
+      !newsArticle.dateModified ||
+      !newsArticle.author ||
+      !newsArticle.publisher ||
+      newsArticle.url !== `${baseUrl}${route}`
+    ) {
+      throw new Error(`新闻页 NewsArticle 字段不完整：${route}`);
+    }
+    newsDetailRoutes.push(route);
   }
   const isContentDetail =
     (route.startsWith("/news/") && route !== "/news/") ||
@@ -115,5 +135,24 @@ for (const requiredUrl of ["/privacy/", "/disclaimer/", "/corrections/"]) {
     throw new Error(`sitemap 缺少说明页面：${requiredUrl}`);
   }
 }
+for (const route of newsDetailRoutes) {
+  if (!sitemapUrls.includes(`${baseUrl}${route}`)) {
+    throw new Error(`sitemap 缺少新闻详情页：${route}`);
+  }
+}
+const rssItemUrls = [...rss.matchAll(/<item>[\s\S]*?<link>(.*?)<\/link>[\s\S]*?<\/item>/g)].map(
+  (match) => match[1],
+);
+const expectedNewsUrls = newsDetailRoutes.map((route) => `${baseUrl}${route}`);
+const rssNewsUrls = rssItemUrls.filter((url) => url.startsWith(`${baseUrl}/news/`));
+if (
+  rssNewsUrls.length !== expectedNewsUrls.length ||
+  expectedNewsUrls.some((url) => !rssNewsUrls.includes(url)) ||
+  rssNewsUrls.some((url) => !expectedNewsUrls.includes(url))
+) {
+  throw new Error("RSS 中的公开新闻集合与静态新闻详情页不一致");
+}
 
-console.log(`静态输出审计通过：${htmlFiles.length} 个 HTML 文件，${links.length} 个站内链接`);
+console.log(
+  `静态输出审计通过：${htmlFiles.length} 个 HTML 文件，${newsDetailRoutes.length} 个新闻详情页，${links.length} 个站内链接`,
+);

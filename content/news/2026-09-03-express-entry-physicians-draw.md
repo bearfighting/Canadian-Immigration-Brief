@@ -9,6 +9,7 @@ publicationStatus: published
 author: 加拿大移民信息简报
 editor: project-owner
 publishedAt: "2026-09-03"
+eventAt: "2026-09-03"
 updatedAt: "2026-09-05"
 lastVerifiedAt: "2026-09-05"
 policyStatus: announced
@@ -25,6 +26,7 @@ programs:
 officialSources:
   - id: ircc-express-entry-rounds-2026-09-03
     title: IRCC — Express Entry rounds of invitations
+    publisher: IRCC
     url: https://www.canada.ca/en/immigration-refugees-citizenship/corporate/mandate/policies-operational-instructions-agreements/ministerial-instructions/express-entry-rounds.html
     language: en
     accessedAt: "2026-09-05"

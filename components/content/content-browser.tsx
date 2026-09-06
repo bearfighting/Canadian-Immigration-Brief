@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { Card } from "@/components/ui/card";
+import { ContentListCard } from "@/components/content/content-list-card";
 import {
   filterAndPaginateContent,
   type ContentBrowserFilters,
@@ -16,8 +16,6 @@ import {
   statusOptions,
   typeOptions,
 } from "@/lib/content/query";
-import { contentPath, contentTypeLabel } from "@/lib/content/routes";
-import { formatDateOnly } from "@/lib/format/date";
 
 const labels: Record<string, string> = {
   "express-entry": "Express Entry",
@@ -198,19 +196,11 @@ export function ContentBrowser({
           )}
         </div>
         {result.items.length > 0 ? (
-          <div className="mt-4 space-y-4">
+          <ul className="mt-4 space-y-4">
             {result.items.map((item) => (
-              <Card key={item.id}>
-                <p className="text-sm text-muted-foreground">
-                  {contentTypeLabel(item.contentType)} · {formatDateOnly(item.updatedAt)}
-                </p>
-                <h2 className="mt-2 text-xl font-semibold">
-                  <Link href={contentPath(item)}>{item.title}</Link>
-                </h2>
-                <p className="mt-2 text-muted-foreground">{item.description}</p>
-              </Card>
+              <ContentListCard key={item.id} item={item} />
             ))}
-          </div>
+          </ul>
         ) : (
           <div className="mt-6 rounded-xl border border-dashed p-8 text-center" role="status">
             没有符合条件的公开内容。请调整筛选条件或清除筛选。

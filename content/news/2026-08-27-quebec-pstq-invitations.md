@@ -9,6 +9,7 @@ publicationStatus: published
 author: 加拿大移民信息简报
 editor: project-owner
 publishedAt: "2026-08-27"
+eventAt: "2026-08-27"
 updatedAt: "2026-09-05"
 lastVerifiedAt: "2026-09-05"
 policyStatus: announced

@@ -108,6 +108,23 @@ describe("content schema", () => {
     expect(contentSchema.parse(valid).publicationStatus).toBe("published");
   });
 
+  it("accepts optional news event dates and source publishers", () => {
+    const parsed = contentSchema.parse({
+      ...valid,
+      announcedAt: "2026-09-01",
+      eventAt: "2026-09-03",
+      officialSources: [{ ...valid.officialSources[0], publisher: "IRCC" }],
+    });
+    expect(parsed.announcedAt).toEqual(new Date("2026-09-01"));
+    expect(parsed.eventAt).toEqual(new Date("2026-09-03"));
+    expect(parsed.officialSources[0]?.publisher).toBe("IRCC");
+  });
+
+  it("rejects malformed optional news dates", () => {
+    expect(() => contentSchema.parse({ ...valid, announcedAt: "not-a-date" })).toThrow();
+    expect(() => contentSchema.parse({ ...valid, eventAt: "not-a-date" })).toThrow();
+  });
+
   it("requires an audit record for approved content", () => {
     expect(() =>
       contentSchema.parse({

@@ -1,7 +1,7 @@
 # 加拿大移民中文信息网站：内容模型
 
 > 状态：工作稿 v0.2  
-> 更新日期：2026-09-04
+> 更新日期：2026-09-05
 
 ## 1. 设计目标
 
@@ -59,7 +59,7 @@ review:
   reviewedAt: null
 ```
 
-日期使用 ISO 8601；需要时间时必须包含时区。没有明确生效日期时不得推测 `effectiveAt`。
+日期使用 ISO 8601；需要时间时必须包含时区。`announcedAt` 和 `eventAt` 仅在官方来源明确支持时填写，缺失时保持为空；没有明确生效日期时不得推测 `effectiveAt`。来源的 `publisher` 为可选发布机构字段。
 
 ## 5. 新闻 Front Matter
 
@@ -74,6 +74,8 @@ language: zh-CN
 publicationStatus: draft
 
 publishedAt: 2026-09-04
+announcedAt: 2026-09-04
+# eventAt: 2026-09-04  # 仅在文章报道的事件日期有明确官方依据时填写
 updatedAt: 2026-09-04
 effectiveAt: 2026-10-01
 lastVerifiedAt: 2026-09-04
@@ -90,6 +92,7 @@ officialSources:
     title: Immigration, Refugees and Citizenship Canada
     url: https://www.canada.ca/example
     language: en
+    publisher: IRCC
     publishedAt: 2026-09-03
     accessedAt: 2026-09-04
 

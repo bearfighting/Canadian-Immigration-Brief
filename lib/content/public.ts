@@ -9,6 +9,8 @@ export type PublicContent = Pick<
   | "contentType"
   | "language"
   | "publishedAt"
+  | "announcedAt"
+  | "eventAt"
   | "updatedAt"
   | "lastVerifiedAt"
   | "policyStatus"
@@ -35,6 +37,8 @@ export function toPublicContent(content: Content): PublicContent {
     contentType: content.contentType,
     language: content.language,
     publishedAt: content.publishedAt,
+    announcedAt: content.announcedAt,
+    eventAt: content.eventAt,
     updatedAt: content.updatedAt,
     lastVerifiedAt: content.lastVerifiedAt,
     policyStatus: content.policyStatus,

@@ -9,6 +9,27 @@ test("published news is readable", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "官方来源" }).first()).toBeVisible();
 });
 
+test("news archive remains readable without JavaScript", async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  const page = await context.newPage();
+  await page.goto("/news/");
+  await expect(
+    page.getByRole("link", { name: "魁北克以外学习许可申请人的生活费证明标准上调至23,448加元" }),
+  ).toBeVisible();
+  await expect(page.getByText("草稿：待审核的样例内容")).toHaveCount(0);
+  await context.close();
+});
+
+test("news fact box exposes event dates and source publisher", async ({ page }) => {
+  await page.goto("/news/express-entry-physicians-draw-september-2026/");
+  const facts = page.locator('section[aria-labelledby="key-facts"]');
+  await expect(facts.getByText("事件日期")).toBeVisible();
+  await expect(
+    facts.locator("dt").filter({ hasText: "事件日期" }).locator("..").getByRole("definition"),
+  ).toHaveText("2026/9/3");
+  await expect(page.getByText("发布机构：IRCC")).toBeVisible();
+});
+
 test("home page exposes quick discovery tools", async ({ page }) => {
   await page.goto("/");
   const discovery = page.getByRole("complementary", { name: "快速发现" });
