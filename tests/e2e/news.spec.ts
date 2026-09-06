@@ -9,6 +9,42 @@ test("published news is readable", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "官方来源" }).first()).toBeVisible();
 });
 
+test("home page exposes quick discovery tools", async ({ page }) => {
+  await page.goto("/");
+  const discovery = page.getByRole("complementary", { name: "快速发现" });
+  await expect(discovery).toBeVisible();
+  await expect(page.getByLabel("搜索标题或摘要")).toBeVisible();
+  const searchRow = discovery.locator("form > div");
+  const [discoveryBox, searchRowBox] = await Promise.all([
+    discovery.boundingBox(),
+    searchRow.boundingBox(),
+  ]);
+  expect(searchRowBox ? searchRowBox.x + searchRowBox.width : 0).toBeLessThanOrEqual(
+    (discoveryBox ? discoveryBox.x + discoveryBox.width : 0) + 0.5,
+  );
+  await expect(
+    page
+      .getByRole("complementary", { name: "快速发现" })
+      .getByRole("link", { name: "Ontario Workforce Priority Stream" }),
+  ).toHaveAttribute("href", "/content/ontario-workforce-priority-stream/");
+  await page.getByLabel("搜索标题或摘要").fill("医生");
+  await page.getByRole("button", { name: "搜索" }).click();
+  await expect(page).toHaveURL(/\/content\/\?q=%E5%8C%BB%E7%94%9F$/);
+});
+
+test("home discovery tools remain usable on mobile", async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 800 });
+  await page.goto("/");
+  const discovery = page.getByRole("complementary", { name: "快速发现" });
+  await expect(discovery).toBeVisible();
+  const discoveryTop = await discovery.evaluate((element) => element.getBoundingClientRect().top);
+  const latestTop = await page
+    .getByRole("heading", { name: "最新内容" })
+    .evaluate((element) => element.getBoundingClientRect().top);
+  expect(discoveryTop).toBeLessThan(latestTop);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(375);
+});
+
 test("news index only links to published content", async ({ page }) => {
   await page.goto("/news/");
   await expect(page.getByRole("heading", { name: "最新动态" })).toBeVisible();

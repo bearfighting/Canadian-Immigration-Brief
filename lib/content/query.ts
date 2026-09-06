@@ -13,6 +13,12 @@ export const provinceOptions = [
   ["quebec", "Québec"],
 ] as const;
 
+export const programOptions = [
+  ["express-entry", "Express Entry"],
+  ["bc-skilled-worker", "BC PNP Skilled Worker"],
+  ["ontario-workforce-priority", "Ontario Workforce Priority Stream"],
+] as const;
+
 export const statusOptions = [
   ["effective", "已生效"],
   ["announced", "已宣布"],

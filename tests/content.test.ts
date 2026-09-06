@@ -9,6 +9,7 @@ import { filterAndPaginateContent, type ContentListItem } from "@/lib/content/br
 import { redirects } from "@/lib/redirects";
 import { createShareLinks } from "@/lib/share";
 import { resolveBaseUrl } from "@/lib/site";
+import { buildQuery, programOptions } from "@/lib/content/query";
 
 const contentSchema = createContentSchema(new Date("2026-09-04T23:59:59.000Z"));
 
@@ -50,6 +51,24 @@ describe("site URL resolution", () => {
         vercelUrl: "  ",
       }),
     ).toBe("http://localhost:3000");
+  });
+});
+
+describe("home discovery links", () => {
+  it("builds search and filter URLs without empty parameters", () => {
+    expect(buildQuery({ query: " 医生 " })).toBe("?q=%E5%8C%BB%E7%94%9F");
+    expect(buildQuery({ type: "news", province: "bc", status: "effective" })).toBe(
+      "?type=news&province=bc&status=effective",
+    );
+    expect(buildQuery({ query: "" })).toBe("");
+  });
+
+  it("keeps the three core project IDs in the discovery vocabulary", () => {
+    expect(programOptions.map(([value]) => value)).toEqual([
+      "express-entry",
+      "bc-skilled-worker",
+      "ontario-workforce-priority",
+    ]);
   });
 });
 
