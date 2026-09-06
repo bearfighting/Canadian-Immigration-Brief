@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "更正与勘误",
-  description: "加拿大移民信息简报处理错误、来源失效和政策变化的说明。",
+  description: "加拿大移民志处理错误、来源失效和政策变化的说明。",
   alternates: { canonical: "/corrections/" },
 };
 

@@ -11,7 +11,7 @@ officialName: Express Entry
 programStatus: unknown
 guideVersion: draft-2026-09
 changeSummary: 根据 IRCC 官方 Express Entry 页面建立并完成首版项目指南。
-author: 加拿大移民信息简报
+author: 加拿大移民志
 editor: project-owner
 updatedAt: "2026-09-05"
 lastVerifiedAt: "2026-09-05"

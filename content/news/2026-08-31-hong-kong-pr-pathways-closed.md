@@ -6,7 +6,7 @@ slug: hong-kong-pr-pathways-closed-2026
 contentType: news
 language: zh-CN
 publicationStatus: published
-author: 加拿大移民信息简报
+author: 加拿大移民志
 editor: project-owner
 publishedAt: "2026-08-31"
 updatedAt: "2026-09-05"

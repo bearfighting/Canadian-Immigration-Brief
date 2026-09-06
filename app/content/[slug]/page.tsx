@@ -53,7 +53,7 @@ export default async function ContentPage({ params }: { params: Promise<{ slug: 
     <ContentDetailLayout
       meta={
         <>
-          <span>{contentTypeLabel(content.contentType)} · 加拿大移民信息简报</span>
+          <span>{contentTypeLabel(content.contentType)} · 加拿大移民志</span>
           <span>更新于：{formatDateOnly(content.updatedAt)}</span>
           <span>最后核验：{formatDateOnly(content.lastVerifiedAt)}</span>
         </>

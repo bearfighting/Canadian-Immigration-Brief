@@ -13,7 +13,7 @@ lastVerifiedAt: "2026-09-05"
 programStatus: open
 guideVersion: 2026-08-current
 changeSummary: 根据2026年 Ontario OINP 重构和 Workforce Priority Stream 官方页面建立首版。
-author: 加拿大移民信息简报
+author: 加拿大移民志
 editor: project-owner
 jurisdictions: [ontario]
 topics: [permanent-residence, work-permit]

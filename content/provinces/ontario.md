@@ -7,7 +7,7 @@ contentType: policy-explainer
 language: zh-CN
 publicationStatus: published
 publishedAt: "2026-09-05"
-author: 加拿大移民信息简报
+author: 加拿大移民志
 editor: project-owner
 updatedAt: "2026-09-05"
 lastVerifiedAt: "2026-09-05"

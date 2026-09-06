@@ -31,7 +31,7 @@ export function renderRss(items: PublicContent[], baseUrl: string) {
     .join("");
   return (
     '<?xml version="1.0" encoding="UTF-8"?>' +
-    '<rss version="2.0"><channel><title>加拿大移民信息简报</title><link>' +
+    '<rss version="2.0"><channel><title>加拿大移民志</title><link>' +
     escapeXml(baseUrl) +
     "</link><description>看懂加拿大移民政策与现实</description>" +
     entries +

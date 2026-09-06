@@ -14,7 +14,7 @@ lastVerifiedAt: "2026-09-05"
 programStatus: open
 guideVersion: 2026-06-current
 changeSummary: 根据2026年现行 BC PNP Skills Immigration 官方指南建立首版。
-author: 加拿大移民信息简报
+author: 加拿大移民志
 editor: project-owner
 jurisdictions: [bc]
 topics: [permanent-residence, work-permit]

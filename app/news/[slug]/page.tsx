@@ -97,7 +97,7 @@ export default async function NewsPage({ params }: { params: Promise<{ slug: str
       <ContentDetailLayout
         meta={
           <>
-            <span>新闻 · 加拿大移民信息简报</span>
+            <span>新闻 · 加拿大移民志</span>
             <span>发布于：{formatDateOnly(content.publishedAt)}</span>
           </>
         }

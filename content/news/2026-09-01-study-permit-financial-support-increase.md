@@ -6,7 +6,7 @@ slug: study-permit-financial-support-increase-2026
 contentType: news
 language: zh-CN
 publicationStatus: published
-author: 加拿大移民信息简报
+author: 加拿大移民志
 editor: project-owner
 publishedAt: "2026-09-01"
 updatedAt: "2026-09-05"

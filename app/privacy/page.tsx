@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "隐私说明",
-  description: "加拿大移民信息简报如何处理必要的技术日志和用户信息。",
+  description: "加拿大移民志如何处理必要的技术日志和用户信息。",
   alternates: { canonical: "/privacy/" },
 };
 

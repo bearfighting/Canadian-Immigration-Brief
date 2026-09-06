@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "免责声明",
-  description: "加拿大移民信息简报的内容范围和使用边界。",
+  description: "加拿大移民志的内容范围和使用边界。",
   alternates: { canonical: "/disclaimer/" },
 };
 

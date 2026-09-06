@@ -19,7 +19,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <header className="border-b bg-white">
           <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-4 sm:px-8">
             <Link href="/" className="font-semibold no-underline text-brand">
-              加拿大移民信息简报
+              加拿大移民志
             </Link>
             <nav aria-label="主导航" className="hidden items-center gap-4 text-sm md:flex">
               <Link href="/content/">全部内容</Link>

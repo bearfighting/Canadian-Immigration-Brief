@@ -6,7 +6,7 @@ slug: Invalid Slug
 contentType: news
 language: zh-CN
 publicationStatus: published
-author: 加拿大移民信息简报
+author: 加拿大移民志
 editor: project-owner
 updatedAt: "2026-09-04"
 lastVerifiedAt: "2026-09-04"

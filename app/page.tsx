@@ -20,7 +20,7 @@ export default async function HomePage() {
           <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl sm:h-32 sm:w-32">
             <Image
               src="/logo.png"
-              alt="加拿大移民信息简报标志"
+              alt="加拿大移民志标志"
               width={128}
               height={128}
               priority
@@ -32,7 +32,7 @@ export default async function HomePage() {
               看懂加拿大移民政策与现实
             </p>
             <h1 className="mb-5 text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">
-              加拿大移民信息简报
+              加拿大移民志
             </h1>
           </div>
         </div>

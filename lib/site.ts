@@ -46,7 +46,7 @@ if (
 }
 
 export const siteConfig = {
-  name: "加拿大移民信息简报",
+  name: "加拿大移民志",
   tagline: "看懂加拿大移民政策与现实",
   baseUrl: resolvedBaseUrl,
 };
